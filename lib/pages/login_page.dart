@@ -6,8 +6,11 @@ class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _login() {
-    return true;
+  void _login(context) async {
+    var result = true;
+    if (result) {
+      await Navigator.popAndPushNamed(context, '/home');
+    }
   }
 
   void _register(BuildContext context) async {
@@ -55,10 +58,10 @@ class LoginPage extends StatelessWidget {
                   child: OutlinedButton.icon(
                     label: const Text(
                       "Login",
-                      style: const TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20),
                     ),
                     icon: const Icon(Icons.lock),
-                    onPressed: _login,
+                    onPressed: () => _login(context),
                   ),
                 ),
                 TextButton(
