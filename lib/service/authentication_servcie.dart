@@ -3,22 +3,29 @@ import 'package:food_donor/models/user.dart';
 
 abstract class AuthenictionService {
   final UserRepository _userRepository = UserRepository.instance;
-  static bool _loginStatus = false;
-  static bool get loginStatus => _loginStatus;
 
   bool login(User user);
   bool register(User user);
 
   static AuthenictionService get instance => AuthenictionServiceImpl();
+
+  User get currentUser;
 }
 
 class AuthenictionServiceImpl extends AuthenictionService {
+  static User _currentUser = User();
+
   @override
   bool login(User user) {
     var temp =
         _userRepository.getUserByEmailAndPassword(user.email, user.password);
+    _currentUser = user;
 
-    return _isNotNull(temp);
+    if (_isNotNull(temp)) {
+      _currentUser = user;
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -31,4 +38,7 @@ class AuthenictionServiceImpl extends AuthenictionService {
     // ignore: unnecessary_null_comparison
     return temp == null ? false : true;
   }
+
+  @override
+  User get currentUser => _currentUser;
 }

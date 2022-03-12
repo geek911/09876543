@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 enum HomeFragmentType { HOME, DONATIONS, RECEIVED, PROFILE }
 
 abstract class HomeFragments {
-  static Widget newWidget([HomeFragmentType type = HomeFragmentType.HOME]) {
+  static Widget atIndex([HomeFragmentType type = HomeFragmentType.HOME]) {
     Widget fragment;
     switch (type) {
       case HomeFragmentType.HOME:

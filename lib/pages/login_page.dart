@@ -12,26 +12,32 @@ class LoginPage extends StatelessWidget {
   final _authService = AuthenictionService.instance;
 
   void _login(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      var user = User();
-
-      user.email = _emailController.text;
-      user.password = _passwordController.text;
-
-      var result = _authService.login(user);
-      if (result) {
-        await Navigator.popAndPushNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Something is not right, please check your internet connection')));
-      }
-    }
+    await Navigator.popAndPushNamed(context, '/home');
   }
+
+  // void _login(BuildContext context) async {
+  //   if (_formKey.currentState!.validate()) {
+  //     var user = User();
+
+  //     user.email = _emailController.text;
+  //     user.password = _passwordController.text;
+
+  //     var result = _authService.login(user);
+  //     if (result) {
+  //       await Navigator.popAndPushNamed(context, '/home');
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //           content: Text(
+  //               'Something is not right, please check your internet connection')));
+  //     }
+  //   }
+  // }
 
   void _register(BuildContext context) async {
     await Navigator.of(context).pushNamed('/register');
   }
+
+  void dispose() {}
 
   @override
   Widget build(BuildContext context) {
