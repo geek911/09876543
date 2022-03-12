@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:food_donor/commons/fragments.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  HomeFragmentType _fragmentType = HomeFragmentType.HOME;
+
+  void _changeFragment(HomeFragmentType type, BuildContext context) {
+    Navigator.of(context).pop();
+    setState(() {
+      _fragmentType = type;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(),
+      body: HomeFragments.newWidget(_fragmentType),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -26,19 +41,19 @@ class HomePage extends StatelessWidget {
             ),
             ListTile(
               title: const Text("Home"),
-              onTap: () {},
+              onTap: () => _changeFragment(HomeFragmentType.HOME, context),
             ),
             ListTile(
               title: const Text("Donations"),
-              onTap: () {},
+              onTap: () => _changeFragment(HomeFragmentType.DONATIONS, context),
             ),
             ListTile(
               title: const Text("Received"),
-              onTap: () {},
+              onTap: () => _changeFragment(HomeFragmentType.RECEIVED, context),
             ),
             ListTile(
               title: const Text("Profile"),
-              onTap: () {},
+              onTap: () => _changeFragment(HomeFragmentType.PROFILE, context),
             )
           ],
         ),

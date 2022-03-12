@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
-class RegistrationFields extends StatelessWidget {
-  final TextEditingController controller;
-  final String title;
-  final bool obscureText;
-
-  const RegistrationFields(
-      {Key? key,
-      required this.controller,
-      required this.title,
-      this.obscureText: false})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
+class FormFields {
+  static Widget textField(String title, TextEditingController controller,
+      {validator: null}) {
+    return TextFormField(
       controller: controller,
-      obscureText: obscureText,
+      validator: validator,
+      decoration: InputDecoration(
+          labelText: title,
+          border: const OutlineInputBorder(),
+          errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.red, width: 5))),
+    );
+  }
+
+  static Widget passwordField(String title, TextEditingController controller,
+      {validator: null}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: true,
+      validator: validator,
       decoration: InputDecoration(
           labelText: title,
           border: const OutlineInputBorder(),

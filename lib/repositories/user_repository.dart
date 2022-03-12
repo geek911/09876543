@@ -3,7 +3,7 @@ import 'package:food_donor/models/user.dart';
 abstract class UserRepository {
   static UserRepository get instance => FakeUserRepository();
 
-  User getUserByEmailAndPassword(String? email, String? password);
+  User? getUserByEmailAndPassword(String? email, String? password);
 
   User addUser(User user);
 }
@@ -19,8 +19,12 @@ class FakeUserRepository extends UserRepository {
   }
 
   @override
-  User getUserByEmailAndPassword(String? email, String? password) {
-    return _users.firstWhere(
-        (element) => element.email == email && element.password == password);
+  User? getUserByEmailAndPassword(String? email, String? password) {
+    User? user;
+    try {
+      user = _users.firstWhere(
+          (element) => element.email == email && element.password == password);
+    } catch (e) {}
+    return user;
   }
 }
