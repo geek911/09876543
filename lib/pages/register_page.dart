@@ -18,13 +18,24 @@ class RegisterPage extends StatelessWidget {
 
   void _register(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pop();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Something is not right, please check your internet connection')),
-      );
+      // Create person pojo
+      var user = User();
+      user.displayName =
+          '${firstnameController.text} ${lastnameController.text}';
+      user.phoneNumber = phoneNumberController.text;
+      user.email = emailController.text;
+      user.password = passwordController.text;
+
+      var successful = _authenictionService.register(user);
+      if (successful) {
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'Something is not right, please check your internet connection')),
+        );
+      }
     }
   }
 
