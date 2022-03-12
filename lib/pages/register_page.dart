@@ -1,21 +1,31 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_donor/app.dart';
-import 'package:flutter/widgets.dart';
 import 'package:food_donor/commons/widgets.dart';
+import 'package:food_donor/service/authentication_servcie.dart';
+
+import 'package:food_donor/models/user.dart';
+import 'package:form_validator/form_validator.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({Key? key}) : super(key: key);
-
+  final _formKey = GlobalKey<FormState>();
   final firstnameController = TextEditingController();
   final lastnameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final AuthenictionService _authenictionService = AuthenictionService.instance;
 
   void _register(BuildContext context) {
-    Navigator.of(context).pop();
+    if (_formKey.currentState!.validate()) {
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Something is not right, please check your internet connection')),
+      );
+    }
   }
 
   @override
@@ -27,52 +37,67 @@ class RegisterPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            RegistrationFields(
-              controller: firstnameController,
-              title: "Firstname",
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            RegistrationFields(
-              controller: lastnameController,
-              title: "Lastname",
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            RegistrationFields(
-              controller: emailController,
-              title: "Email",
-            ),
-            RegistrationFields(
-              controller: passwordController,
-              title: "Password",
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            RegistrationFields(
-              controller: confirmPasswordController,
-              title: "Confirm Password ",
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 50,
-              child: OutlinedButton.icon(
-                label: const Text(
-                  "Register",
-                  style: TextStyle(fontSize: 20),
-                ),
-                icon: const Icon(Icons.app_registration),
-                onPressed: () => _register(context),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              FormFields.textField("Firstname", firstnameController,
+                  validator: ValidationBuilder()
+                      .minLength(2)
+                      .maxLength(20)
+                      .required("Firstname cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
               ),
-            ),
-          ],
+              FormFields.textField("Lastname", lastnameController,
+                  validator: ValidationBuilder()
+                      .minLength(2)
+                      .maxLength(20)
+                      .required("Lastname cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
+              ),
+              FormFields.textField('Email', emailController,
+                  validator: ValidationBuilder()
+                      .email("Please enter a valid email")
+                      .required("Email cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
+              ),
+              FormFields.passwordField("Password", passwordController,
+                  validator: ValidationBuilder()
+                      .minLength(
+                          8, 'Password should be a minimum of 8 characters')
+                      .required("Password Cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
+              ),
+              FormFields.passwordField("Comfirm Password", passwordController,
+                  validator: ValidationBuilder()
+                      .minLength(
+                          8, 'Password should be a minimum of 8 characters')
+                      .required("Password Cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: 50,
+                child: OutlinedButton.icon(
+                  label: const Text(
+                    "Register",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  icon: const Icon(Icons.app_registration),
+                  onPressed: () => _register(context),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
