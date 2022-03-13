@@ -1,8 +1,8 @@
-class User {
+class CustomUser {
   String? id;
   String? displayName;
-  String? email;
-  String? location;
+  late String email;
+  late String location;
   String? password;
   String? phoneNumber;
 }

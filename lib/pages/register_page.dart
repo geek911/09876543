@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/commons/widgets.dart';
 import 'package:food_donor/service/authentication_servcie.dart';
 
-import 'package:food_donor/models/user.dart';
+import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -14,27 +15,35 @@ class RegisterPage extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final AuthenictionService _authenictionService = AuthenictionService.instance;
 
-  void _register(BuildContext context) {
+  Future<void> _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       // Create person pojo
-      var user = User();
-      user.displayName =
-          '${firstnameController.text} ${lastnameController.text}';
-      user.phoneNumber = phoneNumberController.text;
-      user.email = emailController.text;
-      user.password = passwordController.text;
 
-      var successful = _authenictionService.register(user);
-      if (successful) {
+      String message = '';
+
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text);
+        await userCredential.user?.updateDisplayName(
+            "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
         Navigator.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
-                  'Something is not right, please check your internet connection')),
-        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          message = 'The password provided is too weak.';
+        } else if (e.code == 'email-already-in-use') {
+          message = 'The account already exists for that email.';
+        }
+      } catch (e) {
+        message = 'Something went wrong, please check your net connectivity';
+      } finally {
+        if (message.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        }
       }
     }
   }
@@ -87,12 +96,17 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              FormFields.passwordField("Comfirm Password", passwordController,
-                  validator: ValidationBuilder()
-                      .minLength(
-                          8, 'Password should be a minimum of 8 characters')
-                      .required("Password Cannot be empty")
-                      .build()),
+              FormFields.passwordField(
+                  "Comfirm Password", confirmPasswordController,
+                  validator: (String? value) {
+                if (value == null) {
+                  return "This field is required";
+                } else if (value != passwordController.text) {
+                  return "Passwords are not the same";
+                } else {
+                  return null;
+                }
+              }),
               const SizedBox(
                 height: 10,
               ),

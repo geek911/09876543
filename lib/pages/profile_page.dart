@@ -4,7 +4,7 @@ import 'package:food_donor/service/authentication_servcie.dart';
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
 
-  final AuthenictionService _authenictionService = AuthenictionService.instance;
+  // final AuthenictionService _authenictionService = AuthenictionService.instance;
 
   @override
   Widget build(BuildContext context) {

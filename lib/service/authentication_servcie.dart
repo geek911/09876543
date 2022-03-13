@@ -1,44 +1,33 @@
-import 'package:food_donor/repositories/user_repository.dart';
-import 'package:food_donor/models/user.dart';
+// import 'package:food_donor/repositories/user_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-abstract class AuthenictionService {
-  final UserRepository _userRepository = UserRepository.instance;
+// abstract class AuthenictionService {
+//   bool login(User user);
+//   @override
+//   Future<void> register(
+//       {required fullName, required String email, required String password});
 
-  bool login(User user);
-  bool register(User user);
+//   static AuthenictionService get instance => AuthenictionServiceImpl();
 
-  static AuthenictionService get instance => AuthenictionServiceImpl();
+//   User get currentUser;
+// }
 
-  User get currentUser;
-}
-
-class AuthenictionServiceImpl extends AuthenictionService {
-  static User _currentUser = User();
+class AuthenictionService {
+  var _firebase = FirebaseAuth.instance;
 
   @override
-  bool login(User user) {
-    var temp =
-        _userRepository.getUserByEmailAndPassword(user.email, user.password);
-    _currentUser = user;
-
-    if (_isNotNull(temp)) {
-      _currentUser = user;
-      return true;
-    }
-    return false;
+  Future<void> login({required String email, required String password}) async {
+    await _firebase.signInWithEmailAndPassword(
+        email: email, password: password);
   }
 
   @override
-  bool register(User newUser) {
-    var temp = _userRepository.addUser(newUser);
-    return _isNotNull(temp);
+  Future<void> register(
+      {required fullName,
+      required String email,
+      required String password}) async {
+    var userCredentials = await _firebase.createUserWithEmailAndPassword(
+        email: email, password: password);
+    await userCredentials.user?.updateDisplayName(fullName);
   }
-
-  bool _isNotNull(User? temp) {
-    // ignore: unnecessary_null_comparison
-    return temp == null ? false : true;
-  }
-
-  @override
-  User get currentUser => _currentUser;
 }
