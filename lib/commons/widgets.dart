@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_donor/models/custom_user.dart';
 
 class FormFields {
   static Widget textField(String title, TextEditingController controller,
@@ -42,8 +43,87 @@ class FormFields {
   }
 }
 
-// showDialog(context: context, builder: (BuildContext context){
-//     return AlertDialog(
-//       title: Text("Success"),
-//       content: Text("Saved successfully"),
-//     );
+class InfoCard extends StatelessWidget {
+  // the values we need
+  final String text;
+  final IconData icon;
+  Function onPressed;
+
+  InfoCard({required this.text, required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text(
+          text,
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 20,
+              fontFamily: "Source Sans Pro"),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileWidget {
+  static Widget profileBody(BuildContext context, CustomUser user) {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 50,
+        ),
+        Text(
+          user.displayName ??= 'Loading',
+          style: TextStyle(
+            fontSize: 40.0,
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Pacifico",
+          ),
+        ),
+        Text(
+          (user.donator ??= false) ? "Donor" : "Receiver",
+          style: TextStyle(
+              fontSize: 30,
+              color: Colors.blueGrey[200],
+              letterSpacing: 2.5,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Source Sans Pro"),
+        ),
+        SizedBox(
+          height: 20,
+          width: 200,
+          child: Divider(
+            color: Colors.white,
+          ),
+        ),
+
+        // we will be creating a new widget name info carrd
+        InfoCard(
+            text: user.phoneNumber ??= "Loading",
+            icon: Icons.phone,
+            onPressed: () async {}),
+        InfoCard(
+            text: user.description ??= "Loading",
+            icon: Icons.web,
+            onPressed: () async {}),
+        // InfoCard(
+        //     text: "location",
+        //     icon: Icons.location_city,
+        //     onPressed: () async {}),
+        InfoCard(
+            text: user.email ??= "Loading",
+            icon: Icons.email,
+            onPressed: () async {}),
+      ],
+    );
+  }
+}

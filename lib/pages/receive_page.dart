@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/commons/fragments.dart';
+import 'package:food_donor/commons/widgets.dart';
+import 'package:food_donor/database.dart';
+import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
 
 class ReceiverPage extends StatefulWidget {
@@ -14,6 +17,23 @@ class ReceiverPage extends StatefulWidget {
 class _ReceiverPageState extends State<ReceiverPage> {
   HomeFragmentType _fragmentType = HomeFragmentType.HOME;
   int _index = 0;
+  CustomUser _user = CustomUser();
+
+  Future<CustomUser> _loadProfile() async {
+    var user = await Database.getProfile();
+
+    return user;
+  }
+
+  @override
+  void initState() {
+    _loadProfile().then((value) {
+      setState(() {});
+      _user = value;
+    });
+
+    super.initState();
+  }
 
   void _changeFragment(int index) {
     setState(() {
@@ -29,9 +49,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
       Center(
         child: Text('Received'),
       ),
-      Center(
-        child: Text('Profile'),
-      ),
+      ProfileWidget.profileBody(context, _user),
     ];
   }
 
@@ -62,7 +80,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.download),
-            label: 'Receive',
+            label: 'Received',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

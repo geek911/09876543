@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 class CustomUser {
   String? id;
   String? firstName;
@@ -9,6 +12,7 @@ class CustomUser {
   String? location;
   String? password;
   String? phoneNumber;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   Map<String, dynamic> toProfileJson() {
     return {
@@ -22,6 +26,12 @@ class CustomUser {
     description = json['description'];
     phoneNumber = json['phone_number'];
     donator = json['donator'];
+    displayName = json['displayName'];
+    donator = json['donator'];
+    displayName = _auth.currentUser?.displayName;
+    firstName = displayName?.split(" ")[0];
+    lastName = displayName?.split(" ")[1];
+    email = _auth.currentUser?.email;
 
     return this;
   }
