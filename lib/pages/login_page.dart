@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:food_donor/pages/donor_page.dart';
 import 'package:food_donor/pages/home_page.dart';
+import 'package:food_donor/pages/receive_page.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:food_donor/service/authentication_servcie.dart';
 
@@ -50,16 +53,33 @@ class _FutureNavigationState extends State<FutureNavigation> {
   }
 
   Future<void> _dashboard() async {
-    await Future.delayed(Duration(seconds: 3)).then((value) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return HomePage();
-          },
-        ),
-      );
-    });
+    var profile = await Database.getProfile();
+
+    bool isDonator = profile.donator ??= false;
+
+    if (isDonator) {
+      await Future.delayed(Duration(seconds: 3)).then((value) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return DonorPage();
+            },
+          ),
+        );
+      });
+    } else {
+      await Future.delayed(Duration(seconds: 3)).then((value) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return ReceiverPage();
+            },
+          ),
+        );
+      });
+    }
   }
 }
 

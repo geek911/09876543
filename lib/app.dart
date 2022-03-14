@@ -4,6 +4,7 @@ import 'package:food_donor/pages/login_page.dart';
 import 'package:food_donor/pages/register_page.dart';
 import 'package:food_donor/pages/profile_page.dart';
 import 'package:food_donor/pages/home_page.dart';
+import 'package:food_donor/pages/donor_page.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -17,7 +18,8 @@ class App extends StatelessWidget {
         '/register': (context) => RegisterPage(),
         '/profile': (context) => ProfilePage(),
         '/home': (context) => HomePage(),
-        '/add_donation': (context) => AddDonationPage()
+        '/add_donation': (context) => AddDonationPage(),
+        '/donor': (context) => DonorPage(),
       },
       initialRoute: '/default',
     );
