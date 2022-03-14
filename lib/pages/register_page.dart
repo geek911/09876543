@@ -38,26 +38,28 @@ class _RegisterPageState extends State<RegisterPage> {
       String message = '';
 
       try {
-        await FirebaseAuth.instance
+        var user = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: emailController.text.trim(),
-                password: passwordController.text).whenComplete((){}).then((value){
-                  value.user?.updateDisplayName(
-              "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
-                  var customUser = CustomUser();
-                  customUser.id = value.user?.uid;
-                  customUser.donator = isDonator;
-                  customUser.description = descriptionController.text;
-                  customUser.phoneNumber = phoneNumberController.text;
+                password: passwordController.text);
 
-                  Database.addProfile(customUser.toProfile()).then((value) {
-                    Navigator.of(context).pop();
-                  });
+        user.user?.updateDisplayName(
+            "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
 
+        var customUser = CustomUser();
 
+        customUser.id = user.user?.uid;
+        customUser.firstName = firstnameController.text;
+        customUser.lastName = lastnameController.text;
+        customUser.donator = isDonator;
+        customUser.description = descriptionController.text;
+        customUser.phoneNumber = phoneNumberController.text;
+
+        await Database.addProfile(customUser.toProfile()).then((value) {
+          Navigator.of(context).pop();
         });
 
-        Navigator.of(context).pop();
+
 
 
       } on FirebaseAuthException catch (e) {
@@ -67,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
           message = 'The account already exists for that email.';
         }
       } catch (e) {
-        message = 'Something went wrong, please check your net connectivity';
+        message = 'Something went wrong, please check your network connectivity';
       } finally {
         if (message.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -117,6 +119,14 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(
                 height: 10,
               ),
+              FormFields.textField('Phone Number', phoneNumberController,
+                  validator: ValidationBuilder()
+                      .phone("Please enter phone number")
+                      .required("Phone cannot be empty")
+                      .build()),
+              const SizedBox(
+                height: 10,
+              ),
               FormFields.passwordField("Password", passwordController,
                   validator: ValidationBuilder()
                       .minLength(
@@ -149,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               Row(
                 children: [
-                  Text("Donator"),
+                  Text("Donor?"),
                   Checkbox(
                       value: isDonator,
                       onChanged: (value) {

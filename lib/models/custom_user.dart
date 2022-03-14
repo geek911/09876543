@@ -1,5 +1,7 @@
 class CustomUser {
   String? id;
+  String? firstName;
+  String? lastName;
   String? displayName;
   String? email;
   bool? donator;
@@ -10,9 +12,8 @@ class CustomUser {
 
   Map<String, dynamic > toProfile(){
     return {
-      "id": id ??= "Not Set",
-      "description": description ??= "",
-      "phone_number": phoneNumber ??= "",
+      "description": description ??= "na",
+      "phone_number": phoneNumber ??= "na",
       "donator": donator ??= false,
     };
   }
