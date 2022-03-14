@@ -101,7 +101,7 @@ class LoginPage extends StatelessWidget {
                 password: _passwordController.text);
         _emailController.clear();
         _passwordController.clear();
-        await Navigator.popAndPushNamed(context, '/default');
+        await Navigator.pushReplacementNamed(context, '/default');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           message = 'No user found for that email.';
