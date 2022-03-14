@@ -90,12 +90,6 @@ class _ReceiverPageState extends State<ReceiverPage> {
         currentIndex: _index,
         onTap: _changeFragment,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).pushNamed('/add_donation');
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 
