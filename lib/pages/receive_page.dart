@@ -58,11 +58,11 @@ class _ReceiverPageState extends State<ReceiverPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/profile');
-              },
-              icon: Icon(Icons.person)),
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.pushNamed(context, '/profile');
+          //     },
+          //     icon: Icon(Icons.person)),
           IconButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
