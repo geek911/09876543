@@ -6,6 +6,7 @@ import 'package:food_donor/service/authentication_servcie.dart';
 import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:food_donor/database.dart';
+
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
 
@@ -38,10 +39,9 @@ class _RegisterPageState extends State<RegisterPage> {
       String message = '';
 
       try {
-        var user = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text.trim(),
-                password: passwordController.text);
+        var user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text);
 
         user.user?.updateDisplayName(
             "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
@@ -55,13 +55,9 @@ class _RegisterPageState extends State<RegisterPage> {
         customUser.description = descriptionController.text;
         customUser.phoneNumber = phoneNumberController.text;
 
-        await Database.addProfile(customUser.toProfile()).then((value) {
+        await Database.addProfile(customUser.toProfileJson()).then((value) {
           Navigator.of(context).pop();
         });
-
-
-
-
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           message = 'The password provided is too weak.';
@@ -69,7 +65,8 @@ class _RegisterPageState extends State<RegisterPage> {
           message = 'The account already exists for that email.';
         }
       } catch (e) {
-        message = 'Something went wrong, please check your network connectivity';
+        message =
+            'Something went wrong, please check your network connectivity';
       } finally {
         if (message.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -150,7 +147,10 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(
                 height: 10,
               ),
-              FormFields.textBox("Description", descriptionController,),
+              FormFields.textBox(
+                "Description",
+                descriptionController,
+              ),
               const SizedBox(
                 height: 10,
               ),

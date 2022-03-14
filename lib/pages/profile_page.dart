@@ -1,12 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_donor/database.dart';
+import 'package:food_donor/models/custom_user.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   var _user = FirebaseAuth.instance.currentUser;
+  CustomUser customUser = CustomUser();
+
+  @override
+  void initState() {
+    _getProfile().then((value) {
+      setState(() {
+        customUser = value;
+      });
+    });
+  }
 
   // final AuthenictionService _authenictionService = AuthenictionService.instance;
+  Future<CustomUser> _getProfile() async {
+    var user = await Database.getProfile();
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +70,15 @@ class ProfilePage extends StatelessWidget {
               height: 8,
             ),
             Text(
-              _user?.phoneNumber != null
-                  ? _user?.phoneNumber as String
-                  : 'Not Added',
+              customUser.phoneNumber ??= 'Loading',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text("Description"),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              customUser.description ??= 'Loading',
               style: TextStyle(fontSize: 20),
             ),
             Container(
