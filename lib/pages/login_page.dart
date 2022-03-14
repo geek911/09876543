@@ -1,8 +1,67 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:food_donor/pages/home_page.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:food_donor/service/authentication_servcie.dart';
+
+class FutureNavigation extends StatefulWidget {
+  @override
+  _FutureNavigationState createState() => _FutureNavigationState();
+}
+
+class _FutureNavigationState extends State<FutureNavigation> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: buildBody(context),
+    );
+  }
+
+  Widget buildBody(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser == null)
+      return FutureBuilder(
+        future: _login(),
+        builder: (context, snapshot) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    else {
+      return FutureBuilder(
+        future: _dashboard(),
+        builder: (context, snapshot) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    }
+  }
+
+  Future<void> _login() async {
+    await Future.delayed(Duration(seconds: 3)).then((value) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return LoginPage();
+          },
+        ),
+      );
+    });
+  }
+
+  Future<void> _dashboard() async {
+    await Future.delayed(Duration(seconds: 3)).then((value) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return HomePage();
+          },
+        ),
+      );
+    });
+  }
+}
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -22,7 +81,7 @@ class LoginPage extends StatelessWidget {
                 password: _passwordController.text);
         _emailController.clear();
         _passwordController.clear();
-        await Navigator.popAndPushNamed(context, '/home');
+        await Navigator.popAndPushNamed(context, '/default');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           message = 'No user found for that email.';
@@ -44,10 +103,13 @@ class LoginPage extends StatelessWidget {
     await Navigator.of(context).pushNamed('/register');
   }
 
+  // Widget _checkStatus(){
+  //   if(FirebaseAuth.instance.currentUser == null){}
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(),
       body: Container(
           margin: const EdgeInsets.only(left: 20, right: 20),
           child: Center(

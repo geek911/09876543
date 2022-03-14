@@ -15,6 +15,7 @@ class RegisterPage extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool isDonator = false;
 
   Future<void> _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
@@ -107,6 +108,14 @@ class RegisterPage extends StatelessWidget {
                   return null;
                 }
               }),
+              const SizedBox(
+                height: 10,
+              ),
+              Checkbox(
+                  value: isDonator,
+                  onChanged: (value) {
+                    isDonator = !isDonator;
+                  }),
               const SizedBox(
                 height: 10,
               ),

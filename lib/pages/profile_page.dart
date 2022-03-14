@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:food_donor/service/authentication_servcie.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
+
+  var _user = FirebaseAuth.instance.currentUser;
 
   // final AuthenictionService _authenictionService = AuthenictionService.instance;
 
@@ -23,7 +25,9 @@ class ProfilePage extends StatelessWidget {
               height: 8,
             ),
             Text(
-              'Moses Chawawa',
+              _user?.displayName != null
+                  ? _user?.displayName as String
+                  : "Not Added",
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(
@@ -34,7 +38,7 @@ class ProfilePage extends StatelessWidget {
               height: 8,
             ),
             Text(
-              'moseschawawa@gmail.com',
+              _user?.email as String,
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(
@@ -45,7 +49,9 @@ class ProfilePage extends StatelessWidget {
               height: 8,
             ),
             Text(
-              '76165587',
+              _user?.phoneNumber != null
+                  ? _user?.phoneNumber as String
+                  : 'Not Added',
               style: TextStyle(fontSize: 20),
             ),
             Container(

@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/commons/fragments.dart';
+import 'package:form_validator/form_validator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -43,8 +46,9 @@ class _HomePageState extends State<HomePage> {
               },
               icon: Icon(Icons.person)),
           IconButton(
-              onPressed: () {
-                // Navigator.push(context, '/home');
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                await Navigator.pushReplacementNamed(context, '/default');
               },
               icon: Icon(Icons.logout)),
         ],
@@ -68,10 +72,72 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _index,
         onTap: _changeFragment,
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/add_donation');
+        },
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  _showAddDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              height: 300,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Add Donation',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      validator: ValidationBuilder()
+                          .minLength(5, 'Title too short')
+                          .required("Please enter title")
+                          .build(),
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.add),
+                          labelText: 'Title',
+                          border: OutlineInputBorder(),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red))),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      // minLines: 2,
+                      // maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                      validator: ValidationBuilder()
+                          .required("Please enter description")
+                          .build(),
+                      decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.add),
+                          labelText: 'Description',
+                          border: OutlineInputBorder(),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red))),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
