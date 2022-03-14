@@ -5,16 +5,30 @@ import 'package:food_donor/service/authentication_servcie.dart';
 
 import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
-
-class RegisterPage extends StatelessWidget {
+import 'package:food_donor/database.dart';
+class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+
   final firstnameController = TextEditingController();
+
   final lastnameController = TextEditingController();
+
   final phoneNumberController = TextEditingController();
+
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
+
   final confirmPasswordController = TextEditingController();
+  final descriptionController = TextEditingController();
+
   bool isDonator = false;
 
   Future<void> _register(BuildContext context) async {
@@ -24,13 +38,28 @@ class RegisterPage extends StatelessWidget {
       String message = '';
 
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
+        await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: emailController.text.trim(),
-                password: passwordController.text);
-        await userCredential.user?.updateDisplayName(
-            "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
+                password: passwordController.text).whenComplete((){}).then((value){
+                  value.user?.updateDisplayName(
+              "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
+                  var customUser = CustomUser();
+                  customUser.id = value.user?.uid;
+                  customUser.donator = isDonator;
+                  customUser.description = descriptionController.text;
+                  customUser.phoneNumber = phoneNumberController.text;
+
+                  Database.addProfile(customUser.toProfile()).then((value) {
+                    Navigator.of(context).pop();
+                  });
+
+
+        });
+
         Navigator.of(context).pop();
+
+
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           message = 'The password provided is too weak.';
@@ -111,11 +140,25 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Checkbox(
-                  value: isDonator,
-                  onChanged: (value) {
-                    isDonator = !isDonator;
-                  }),
+              FormFields.textBox("Description", descriptionController,),
+              const SizedBox(
+                height: 10,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text("Donator"),
+                  Checkbox(
+                      value: isDonator,
+                      onChanged: (value) {
+                        setState(() {
+                          isDonator = !isDonator;
+                        });
+                      }),
+                ],
+              ),
               const SizedBox(
                 height: 10,
               ),
