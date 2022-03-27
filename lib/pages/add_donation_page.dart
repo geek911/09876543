@@ -60,57 +60,59 @@ class _AddDonationPageState extends State<AddDonationPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              FormFields.textField("Title", _title),
-              const SizedBox(
-                height: 8,
-              ),
-              FormFields.textField("Description", _description),
-              const SizedBox(
-                height: 8,
-              ),
-              FormFields.textField("Quantity", _quantity),
-              const SizedBox(
-                height: 8,
-              ),
-              SfDateRangePicker(
-                onSelectionChanged: _onSelectionChanged,
-                selectionMode: DateRangePickerSelectionMode.range,
-                initialSelectedRange: PickerDateRange(
-                    DateTime.now().subtract(const Duration(days: 4)),
-                    DateTime.now().add(const Duration(days: 3))),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    height: 50,
-                    child: OutlinedButton.icon(
-                      label: const Text(
-                        "Add",
-                        style: TextStyle(fontSize: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                FormFields.textField("Title", _title),
+                const SizedBox(
+                  height: 8,
+                ),
+                FormFields.textField("Description", _description),
+                const SizedBox(
+                  height: 8,
+                ),
+                FormFields.textField("Quantity", _quantity),
+                const SizedBox(
+                  height: 8,
+                ),
+                SfDateRangePicker(
+                  onSelectionChanged: _onSelectionChanged,
+                  selectionMode: DateRangePickerSelectionMode.range,
+                  initialSelectedRange: PickerDateRange(
+                      DateTime.now().subtract(const Duration(days: 4)),
+                      DateTime.now().add(const Duration(days: 3))),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      child: OutlinedButton.icon(
+                        label: const Text(
+                          "Add",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        icon: const Icon(Icons.add),
+                        onPressed: () {},
                       ),
-                      icon: const Icon(Icons.add),
-                      onPressed: () {},
                     ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: OutlinedButton.icon(
-                      label: const Text(
-                        "Cancel",
-                        style: TextStyle(fontSize: 20),
+                    SizedBox(
+                      height: 50,
+                      child: OutlinedButton.icon(
+                        label: const Text(
+                          "Cancel",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      icon: const Icon(Icons.cancel),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
