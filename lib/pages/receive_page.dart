@@ -7,6 +7,8 @@ import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
 
+import '../repositories/donations_repository.dart';
+
 class ReceiverPage extends StatefulWidget {
   const ReceiverPage({Key? key}) : super(key: key);
 
@@ -18,6 +20,9 @@ class _ReceiverPageState extends State<ReceiverPage> {
   HomeFragmentType _fragmentType = HomeFragmentType.HOME;
   int _index = 0;
   CustomUser _user = CustomUser();
+  var _title = ['All Donations', 'Received Donations', 'Profile'];
+
+  List<Donation> _donations = [];
 
   Future<CustomUser> _loadProfile() async {
     var user = await Database.getProfile();
@@ -32,6 +37,8 @@ class _ReceiverPageState extends State<ReceiverPage> {
       _user = value;
     });
 
+    _loadAllDonations();
+
     super.initState();
   }
 
@@ -39,24 +46,40 @@ class _ReceiverPageState extends State<ReceiverPage> {
     setState(() {
       _index = index;
     });
+
+    _loadAllDonations();
   }
 
-  List<Widget> get _dashboardWidgets {
-    return [
-      Center(
-        child: Text('Listings'),
-      ),
+  void _loadAllDonations() {
+    if (_index == 0) {
+      Database.getAllDonations().then((value) {
+        setState(() {});
+
+        _donations = value;
+      });
+    }
+  }
+
+  Widget _dashboardWidgets(BuildContext context, int index) {
+    var widgetList = [
+      ListViewFactory.listingsListView(context, _donations),
       Center(
         child: Text('Received'),
       ),
-      ProfileWidget.profileBody(context, _user),
+      Center(
+        child: Text('Donated'),
+      ),
     ];
+
+    return widgetList[index];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(_title[_index]),
+        centerTitle: true,
         actions: [
           // IconButton(
           //     onPressed: () {
@@ -71,7 +94,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
               icon: Icon(Icons.logout)),
         ],
       ),
-      body: _dashboardWidgets[_index],
+      body: _dashboardWidgets(context, _index),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -5,6 +5,7 @@ import 'package:food_donor/commons/fragments.dart';
 import 'package:food_donor/commons/widgets.dart';
 import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:food_donor/repositories/donations_repository.dart';
 import 'package:form_validator/form_validator.dart';
 
 class DonorPage extends StatefulWidget {
@@ -20,6 +21,10 @@ class _DonorPageState extends State<DonorPage> {
 
   CustomUser _user = CustomUser();
 
+  List<Donation> _donations = [];
+
+  var _title = ['All Donations', 'My Donations', 'Profile'];
+
   Future<CustomUser> _loadProfile() async {
     var user = await Database.getProfile();
 
@@ -33,6 +38,8 @@ class _DonorPageState extends State<DonorPage> {
       _user = value;
     });
 
+    _loadAllDonations();
+
     super.initState();
   }
 
@@ -40,24 +47,40 @@ class _DonorPageState extends State<DonorPage> {
     setState(() {
       _index = index;
     });
+
+    _loadAllDonations();
   }
 
-  List<Widget> get _dashboardWidgets {
-    return [
-      Center(
-        child: Text('Listings'),
-      ),
+  void _loadAllDonations() {
+    if (_index == 0) {
+      Database.getAllDonations().then((value) {
+        setState(() {});
+
+        _donations = value;
+      });
+    }
+  }
+
+  Widget _dashboardWidgets(BuildContext context, int index) {
+    var widgetList = [
+      ListViewFactory.listingsListView(context, _donations),
       Center(
         child: Text('Donated'),
       ),
-      ProfileWidget.profileBody(context, _user),
+      Center(
+        child: Text('Profile'),
+      ),
     ];
+
+    return widgetList[index];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(_title[_index]),
+        centerTitle: true,
         actions: [
           // IconButton(
           //     onPressed: () {
@@ -72,7 +95,7 @@ class _DonorPageState extends State<DonorPage> {
               icon: Icon(Icons.logout)),
         ],
       ),
-      body: _dashboardWidgets[_index],
+      body: _dashboardWidgets(context, _index),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -81,7 +104,7 @@ class _DonorPageState extends State<DonorPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.upload),
-            label: 'Donate',
+            label: 'Donated',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

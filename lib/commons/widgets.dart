@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
+
+import '../repositories/donations_repository.dart';
 
 class FormFields {
   static Widget textField(String title, TextEditingController controller,
@@ -125,5 +128,44 @@ class ProfileWidget {
             onPressed: () async {}),
       ],
     );
+  }
+}
+
+class ListViewFactory {
+  static Widget listingsListView(
+      BuildContext context, List<Donation> donations) {
+    Database.getAllDonations();
+
+    return ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          var donation = donations[index];
+          return Card(
+            child: ListTile(
+              title: Text(donation.title ?? "Not Set"),
+              subtitle: Text(donation.description ?? "N/A"),
+              trailing: Text(
+                  donation.available ?? true ? "Available" : "Unavailable"),
+              leading: Text(
+                donation.quantity ?? 0.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+            ),
+          );
+        });
+
+    // return ListView(
+    //   children: [
+    //     ListTile(
+    //       title: Text("Title"),
+    //       subtitle: Text('This is the description'),
+    //       trailing: Text("Available"),
+    //       leading: Text(
+    //         3.toString(),
+    //         style: TextStyle(fontSize: 30),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:food_donor/repositories/donations_repository.dart';
 
 class Database {
   static final FirebaseDatabase _db = FirebaseDatabase.instance;
@@ -31,5 +32,27 @@ class Database {
     DatabaseReference reference =
         _db.ref('${_auth.currentUser?.uid as String}/donations');
     await reference.push().set(donation);
+  }
+
+  static Future<List<Donation>> getAllDonations() async {
+    var snapshot = await _db.ref('/').once();
+    var donations = <Donation>[];
+
+    for (var child in snapshot.snapshot.children) {
+      for (var c in child.child('donations').children) {
+        var donation = Donation()
+          ..title = c.child('title').value as String?
+          ..available = c.child('available').value as bool?
+          ..fromDate = c.child('from_date').value as String?
+          ..toDate = c.child('to_date').value as String?
+          ..description = c.child('description').value as String?
+          ..location = c.child('location').value as String?
+          ..quantity = c.child('quantity').value as String?;
+
+        donations.add(donation);
+      }
+    }
+
+    return donations;
   }
 }
