@@ -26,4 +26,9 @@ class Database {
       'phone_number': phone_number
     });
   }
+
+  static Future<void> addDonation(Map<String, dynamic> donation) async {
+    DatabaseReference reference = _db.ref('donations');
+    await reference.set(donation);
+  }
 }

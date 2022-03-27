@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_donor/repositories/donations_repository.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:food_donor/commons/widgets.dart';
+
+import '../database.dart';
 
 class AddDonationPage extends StatefulWidget {
   const AddDonationPage({Key? key}) : super(key: key);
@@ -15,6 +19,8 @@ class _AddDonationPageState extends State<AddDonationPage> {
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
+
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _title = TextEditingController();
   final TextEditingController _description = TextEditingController();
@@ -50,6 +56,38 @@ class _AddDonationPageState extends State<AddDonationPage> {
     });
   }
 
+  Future<void> _addDonation(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      // Create person pojo
+
+      String message = '';
+
+      try {
+        var auth = FirebaseAuth.instance;
+
+        var donation = Donation();
+
+        donation.userId = auth.currentUser?.uid;
+        donation.title = _title.text;
+        donation.description = _description.text;
+        donation.quantity = _quantity.text;
+
+        await Database.addDonation(donation.toJson()).then((value) {
+          Navigator.of(context).pop();
+        });
+      } catch (e) {
+        message =
+            'Something went wrong, please check your network connectivity';
+      } finally {
+        if (message.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -60,8 +98,9 @@ class _AddDonationPageState extends State<AddDonationPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
+          child: Form(
+            key: _formKey,
+            child: ListView(
               children: [
                 FormFields.textField("Title", _title),
                 const SizedBox(
@@ -93,7 +132,7 @@ class _AddDonationPageState extends State<AddDonationPage> {
                           style: TextStyle(fontSize: 20),
                         ),
                         icon: const Icon(Icons.add),
-                        onPressed: () {},
+                        onPressed: () => _addDonation(context),
                       ),
                     ),
                     SizedBox(
