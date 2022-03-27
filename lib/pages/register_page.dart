@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               Row(
                 children: [
-                  Text("Donor?"),
+                  const Text("Donor?"),
                   Checkbox(
                       value: isDonator,
                       onChanged: (value) {
