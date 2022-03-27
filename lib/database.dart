@@ -18,17 +18,18 @@ class Database {
 
     var description = snapshot.snapshot.child('description').value;
     var donator = snapshot.snapshot.child('donator').value;
-    var phone_number = snapshot.snapshot.child('phone_number').value;
+    var phoneNumber = snapshot.snapshot.child('phone_number').value;
 
     return CustomUser().fromProfileJson({
       'description': description,
       'donator': donator,
-      'phone_number': phone_number
+      'phone_number': phoneNumber
     });
   }
 
   static Future<void> addDonation(Map<String, dynamic> donation) async {
-    DatabaseReference reference = _db.ref('donations');
-    await reference.set(donation);
+    DatabaseReference reference =
+        _db.ref('${_auth.currentUser?.uid as String}/donations');
+    await reference.push().set(donation);
   }
 }

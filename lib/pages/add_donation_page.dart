@@ -63,11 +63,8 @@ class _AddDonationPageState extends State<AddDonationPage> {
       String message = '';
 
       try {
-        var auth = FirebaseAuth.instance;
-
         var donation = Donation();
 
-        donation.userId = auth.currentUser?.uid;
         donation.title = _title.text;
         donation.description = _description.text;
         donation.quantity = _quantity.text;
