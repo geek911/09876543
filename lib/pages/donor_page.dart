@@ -95,68 +95,8 @@ class _DonorPageState extends State<DonorPage> {
         onPressed: () async {
           await Navigator.of(context).pushNamed('/add_donation');
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
-  }
-
-  _showAddDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            child: Container(
-              height: 300,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Add Donation',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      validator: ValidationBuilder()
-                          .minLength(5, 'Title too short')
-                          .required("Please enter title")
-                          .build(),
-                      decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.add),
-                          labelText: 'Title',
-                          border: OutlineInputBorder(),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red))),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      // minLines: 2,
-                      // maxLines: 5,
-                      keyboardType: TextInputType.multiline,
-                      validator: ValidationBuilder()
-                          .required("Please enter description")
-                          .build(),
-                      decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.add),
-                          labelText: 'Description',
-                          border: OutlineInputBorder(),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red))),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
   }
 }

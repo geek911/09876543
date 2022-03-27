@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
+import 'package:food_donor/commons/widgets.dart';
 
 class AddDonationPage extends StatefulWidget {
   const AddDonationPage({Key? key}) : super(key: key);
@@ -14,6 +15,10 @@ class _AddDonationPageState extends State<AddDonationPage> {
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
+
+  final TextEditingController _title = TextEditingController();
+  final TextEditingController _description = TextEditingController();
+  final TextEditingController _quantity = TextEditingController();
 
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   /// called whenever a selection changed on the date picker widget.
@@ -48,43 +53,67 @@ class _AddDonationPageState extends State<AddDonationPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text('DatePicker demo'),
-            ),
-            body: Stack(
-              children: <Widget>[
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  height: 80,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Selected date: $_selectedDate'),
-                      Text('Selected date count: $_dateCount'),
-                      Text('Selected range: $_range'),
-                      Text('Selected ranges count: $_rangeCount')
-                    ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Add Donation'),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              FormFields.textField("Title", _title),
+              const SizedBox(
+                height: 8,
+              ),
+              FormFields.textField("Description", _description),
+              const SizedBox(
+                height: 8,
+              ),
+              FormFields.textField("Quantity", _quantity),
+              const SizedBox(
+                height: 8,
+              ),
+              SfDateRangePicker(
+                onSelectionChanged: _onSelectionChanged,
+                selectionMode: DateRangePickerSelectionMode.range,
+                initialSelectedRange: PickerDateRange(
+                    DateTime.now().subtract(const Duration(days: 4)),
+                    DateTime.now().add(const Duration(days: 3))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: OutlinedButton.icon(
+                      label: const Text(
+                        "Add",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      icon: const Icon(Icons.add),
+                      onPressed: () {},
+                    ),
                   ),
-                ),
-                Positioned(
-                  left: 0,
-                  top: 80,
-                  right: 0,
-                  bottom: 0,
-                  child: SfDateRangePicker(
-                    onSelectionChanged: _onSelectionChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
-                    initialSelectedRange: PickerDateRange(
-                        DateTime.now().subtract(const Duration(days: 4)),
-                        DateTime.now().add(const Duration(days: 3))),
+                  SizedBox(
+                    height: 50,
+                    child: OutlinedButton.icon(
+                      label: const Text(
+                        "Cancel",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      icon: const Icon(Icons.cancel),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                )
-              ],
-            )));
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
