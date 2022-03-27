@@ -34,6 +34,27 @@ class Database {
     await reference.push().set(donation);
   }
 
+  static Future<List<Donation>> getMyDonations() async {
+    var donations = <Donation>[];
+    var event =
+        await _db.ref('${_auth.currentUser?.uid as String}/donations').once();
+
+    for (var child in event.snapshot.children) {
+      var donation = Donation()
+        ..title = child.child('title').value as String?
+        ..available = child.child('available').value as bool?
+        ..fromDate = child.child('from_date').value as String?
+        ..toDate = child.child('to_date').value as String?
+        ..description = child.child('description').value as String?
+        ..location = child.child('location').value as String?
+        ..quantity = child.child('quantity').value as String?;
+
+      donations.add(donation);
+    }
+
+    return donations;
+  }
+
   static Future<List<Donation>> getAllDonations() async {
     var snapshot = await _db.ref('/').once();
     var donations = <Donation>[];

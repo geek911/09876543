@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/repositories/donations_repository.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:food_donor/commons/widgets.dart';
@@ -25,34 +26,33 @@ class _AddDonationPageState extends State<AddDonationPage> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _description = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
+  final TextEditingController _dateFrom = TextEditingController();
+  final TextEditingController _dateTo = TextEditingController();
+
+  @override
+  void initState() {
+    setState(() {
+      _dateFrom.text = DateFormat('dd/MM/yyyy')
+          .format(DateTime.now().subtract(const Duration(days: 4)));
+      _dateTo.text = DateFormat('dd/MM/yyyy')
+          .format(DateTime.now().add(const Duration(days: 3)));
+    });
+
+    super.initState();
+  }
 
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   /// called whenever a selection changed on the date picker widget.
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    /// The argument value will return the changed date as [DateTime] when the
-    /// widget [SfDateRangeSelectionMode] set as single.
-    ///
-    /// The argument value will return the changed dates as [List<DateTime>]
-    /// when the widget [SfDateRangeSelectionMode] set as multiple.
-    ///
-    /// The argument value will return the changed range as [PickerDateRange]
-    /// when the widget [SfDateRangeSelectionMode] set as range.
-    ///
-    /// The argument value will return the changed ranges as
-    /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
-    /// multi range.
     setState(() {
       if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-            // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+        _dateFrom.text = DateFormat('dd/MM/yyyy').format(args.value.startDate);
+        _dateTo.text = DateFormat('dd/MM/yyyy')
+            .format(args.value.endDate ?? args.value.startDate);
       } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
-      } else if (args.value is List<DateTime>) {
-        _dateCount = args.value.length.toString();
-      } else {
-        _rangeCount = args.value.length.toString();
-      }
+        _dateFrom.text = DateFormat('dd/MM/yyyy').format(args.value);
+        _dateTo.text = DateFormat('dd/MM/yyyy').format(args.value);
+      } else {}
     });
   }
 
@@ -68,6 +68,8 @@ class _AddDonationPageState extends State<AddDonationPage> {
         donation.title = _title.text;
         donation.description = _description.text;
         donation.quantity = _quantity.text;
+        donation.toDate = _dateTo.text;
+        donation.fromDate = _dateFrom.text;
 
         await Database.addDonation(donation.toJson()).then((value) {
           Navigator.of(context).pop();
@@ -99,7 +101,12 @@ class _AddDonationPageState extends State<AddDonationPage> {
             key: _formKey,
             child: ListView(
               children: [
-                FormFields.textField("Title", _title),
+                FormFields.textField("Title", _title,
+                    validator: ValidationBuilder()
+                        .minLength(2)
+                        .maxLength(20)
+                        .required("Title cannot be empty")
+                        .build()),
                 const SizedBox(
                   height: 8,
                 ),
@@ -107,7 +114,10 @@ class _AddDonationPageState extends State<AddDonationPage> {
                 const SizedBox(
                   height: 8,
                 ),
-                FormFields.textField("Quantity", _quantity),
+                FormFields.textField("Quantity", _quantity,
+                    validator: ValidationBuilder()
+                        .regExp(RegExp("[0-9]+"), "Cannot be text")
+                        .build()),
                 const SizedBox(
                   height: 8,
                 ),

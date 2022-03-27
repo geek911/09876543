@@ -38,8 +38,6 @@ class _DonorPageState extends State<DonorPage> {
       _user = value;
     });
 
-    _loadAllDonations();
-
     super.initState();
   }
 
@@ -47,16 +45,20 @@ class _DonorPageState extends State<DonorPage> {
     setState(() {
       _index = index;
     });
-
-    _loadAllDonations();
   }
 
   void _loadAllDonations() {
     if (_index == 0) {
       Database.getAllDonations().then((value) {
-        setState(() {});
-
-        _donations = value;
+        setState(() {
+          _donations = value;
+        });
+      });
+    } else if (_index == 1) {
+      Database.getMyDonations().then((value) {
+        setState(() {
+          _donations = value;
+        });
       });
     }
   }
@@ -64,12 +66,8 @@ class _DonorPageState extends State<DonorPage> {
   Widget _dashboardWidgets(BuildContext context, int index) {
     var widgetList = [
       ListViewFactory.listingsListView(context, _donations),
-      Center(
-        child: Text('Donated'),
-      ),
-      Center(
-        child: Text('Profile'),
-      ),
+      ListViewFactory.listingsListView(context, _donations),
+      ProfileWidget.profileBody(context, _user)
     ];
 
     return widgetList[index];
@@ -77,6 +75,8 @@ class _DonorPageState extends State<DonorPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadAllDonations();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_title[_index]),

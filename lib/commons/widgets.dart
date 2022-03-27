@@ -134,16 +134,18 @@ class ProfileWidget {
 class ListViewFactory {
   static Widget listingsListView(
       BuildContext context, List<Donation> donations) {
-    Database.getAllDonations();
-
     return ListView.builder(
         itemCount: donations.length,
         itemBuilder: (context, index) {
           var donation = donations[index];
+
+          var subtitle =
+              "${donation.description ?? 'N/A'}, ${donation.fromDate ?? 'N/A'} - ${donation.toDate ?? 'N/A'}";
+
           return Card(
             child: ListTile(
               title: Text(donation.title ?? "Not Set"),
-              subtitle: Text(donation.description ?? "N/A"),
+              subtitle: Text(subtitle),
               trailing: Text(
                   donation.available ?? true ? "Available" : "Unavailable"),
               leading: Text(
