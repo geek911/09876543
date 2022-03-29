@@ -1,25 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/commons/widgets.dart';
+import 'package:food_donor/models/receiver.dart';
 import 'package:food_donor/service/authentication_servcie.dart';
 
 import 'package:food_donor/models/custom_user.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:food_donor/database.dart';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPage({Key? key}) : super(key: key);
+class ReceiverRegisterPage extends StatefulWidget {
+  ReceiverRegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<ReceiverRegisterPage> createState() => _ReceiverRegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _ReceiverRegisterPageState extends State<ReceiverRegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final firstnameController = TextEditingController();
-
-  final lastnameController = TextEditingController();
+  final organisationController = TextEditingController();
 
   final phoneNumberController = TextEditingController();
 
@@ -43,19 +42,16 @@ class _RegisterPageState extends State<RegisterPage> {
             email: emailController.text.trim(),
             password: passwordController.text);
 
-        user.user?.updateDisplayName(
-            "${firstnameController.text.trim()} ${lastnameController.text.trim()}");
+        user.user?.updateDisplayName(organisationController.text);
 
-        var customUser = CustomUser();
+        var receiver = Receiver();
 
-        customUser.id = user.user?.uid;
-        customUser.firstName = firstnameController.text;
-        customUser.lastName = lastnameController.text;
-        customUser.donator = isDonator;
-        customUser.description = descriptionController.text;
-        customUser.phoneNumber = phoneNumberController.text;
+        receiver.id = user.user?.uid;
+        receiver.donator = isDonator;
+        receiver.description = descriptionController.text;
+        receiver.phoneNumber = phoneNumberController.text;
 
-        await Database.addProfile(customUser.toProfileJson()).then((value) {
+        await Database.addProfile(receiver.toProfileJson()).then((value) {
           Navigator.of(context).pop();
         });
       } on FirebaseAuthException catch (e) {
@@ -90,21 +86,19 @@ class _RegisterPageState extends State<RegisterPage> {
           key: _formKey,
           child: ListView(
             children: [
-              FormFields.textField("Firstname", firstnameController,
+              FormFields.textField("Organisation Name", organisationController,
                   validator: ValidationBuilder()
                       .minLength(2)
                       .maxLength(20)
-                      .required("Firstname cannot be empty")
+                      .required("Organisation cannot be empty")
                       .build()),
               const SizedBox(
                 height: 10,
               ),
-              FormFields.textField("Lastname", lastnameController,
-                  validator: ValidationBuilder()
-                      .minLength(2)
-                      .maxLength(20)
-                      .required("Lastname cannot be empty")
-                      .build()),
+              FormFields.textBox(
+                "Organisation Description",
+                descriptionController,
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -144,31 +138,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   return null;
                 }
               }),
-              const SizedBox(
-                height: 10,
-              ),
-              FormFields.textBox(
-                "Description",
-                descriptionController,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  const Text("Donor?"),
-                  Checkbox(
-                      value: isDonator,
-                      onChanged: (value) {
-                        setState(() {
-                          isDonator = !isDonator;
-                        });
-                      }),
-                ],
-              ),
               const SizedBox(
                 height: 10,
               ),

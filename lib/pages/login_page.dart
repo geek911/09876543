@@ -117,10 +117,16 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  void _register(BuildContext context) async {
+  void _registerDonor(BuildContext context) async {
     _emailController.clear();
     _passwordController.clear();
     await Navigator.of(context).pushNamed('/register');
+  }
+
+  void _registerReciever(BuildContext context) async {
+    _emailController.clear();
+    _passwordController.clear();
+    await Navigator.of(context).pushNamed('/register_receiver');
   }
 
   // Widget _checkStatus(){
@@ -184,9 +190,14 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    child: const Text('Not yeat a user? Register here'),
-                    onPressed: () => _register(context),
-                  )
+                    child: const Text('Not yet a donor? Register here'),
+                    onPressed: () => _registerDonor(context),
+                  ),
+                  TextButton(
+                    child: const Text(
+                        'Want to receive? Register your organisation here'),
+                    onPressed: () => _registerReciever(context),
+                  ),
                 ],
               ),
             ),

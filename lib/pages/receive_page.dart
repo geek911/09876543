@@ -63,12 +63,10 @@ class _ReceiverPageState extends State<ReceiverPage> {
   Widget _dashboardWidgets(BuildContext context, int index) {
     var widgetList = [
       ListViewFactory.listingsListView(context, _donations),
-      Center(
+      const Center(
         child: Text('Received'),
       ),
-      Center(
-        child: Text('Donated'),
-      ),
+      ProfileWidget.profileBody(context, _user)
     ];
 
     return widgetList[index];
