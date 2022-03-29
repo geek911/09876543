@@ -128,7 +128,7 @@ class _ReceiverRegisterPageState extends State<ReceiverRegisterPage> {
                 height: 10,
               ),
               FormFields.passwordField(
-                  "Comfirm Password", confirmPasswordController,
+                  "Confirm Password", confirmPasswordController,
                   validator: (String? value) {
                 if (value == null) {
                   return "This field is required";

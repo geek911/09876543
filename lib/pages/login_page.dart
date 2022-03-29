@@ -97,7 +97,7 @@ class LoginPage extends StatelessWidget {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-                email: _emailController.text,
+                email: _emailController.text.trim(),
                 password: _passwordController.text);
         _emailController.clear();
         _passwordController.clear();
@@ -194,8 +194,8 @@ class LoginPage extends StatelessWidget {
                     onPressed: () => _registerDonor(context),
                   ),
                   TextButton(
-                    child: const Text(
-                        'Want to receive? Register your organisation here'),
+                    child:
+                        const Text('Want to Receive donations? Register here'),
                     onPressed: () => _registerReciever(context),
                   ),
                 ],
