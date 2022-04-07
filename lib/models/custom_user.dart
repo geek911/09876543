@@ -26,11 +26,7 @@ class CustomUser {
     description = json['description'];
     phoneNumber = json['phone_number'];
     donator = json['donator'];
-    displayName = json['displayName'];
-    donator = json['donator'];
     displayName = _auth.currentUser?.displayName;
-    firstName = displayName?.split(" ")[0];
-    lastName = displayName?.split(" ")[1];
     email = _auth.currentUser?.email;
 
     return this;

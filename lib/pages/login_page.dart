@@ -9,6 +9,8 @@ import 'package:form_validator/form_validator.dart';
 import 'package:food_donor/service/authentication_servcie.dart';
 
 class FutureNavigation extends StatefulWidget {
+  const FutureNavigation({Key? key}) : super(key: key);
+
   @override
   _FutureNavigationState createState() => _FutureNavigationState();
 }
@@ -22,14 +24,14 @@ class _FutureNavigationState extends State<FutureNavigation> {
   }
 
   Widget buildBody(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser == null)
+    if (FirebaseAuth.instance.currentUser == null) {
       return FutureBuilder(
         future: _login(),
         builder: (context, snapshot) {
           return Center(child: CircularProgressIndicator());
         },
       );
-    else {
+    } else {
       return FutureBuilder(
         future: _dashboard(),
         builder: (context, snapshot) {
@@ -58,27 +60,11 @@ class _FutureNavigationState extends State<FutureNavigation> {
     bool isDonator = profile.donator ??= false;
 
     if (isDonator) {
-      await Future.delayed(Duration(seconds: 3)).then((value) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return DonorPage();
-            },
-          ),
-        );
-      });
+      await Future.delayed(Duration(seconds: 3));
+      await Navigator.pushReplacementNamed(context, '/donor_page');
     } else {
-      await Future.delayed(Duration(seconds: 3)).then((value) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return ReceiverPage();
-            },
-          ),
-        );
-      });
+      await Future.delayed(Duration(seconds: 3));
+      await Navigator.pushReplacementNamed(context, '/receiver_page');
     }
   }
 }
@@ -89,6 +75,7 @@ class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   // final _authService = AuthenictionService.instance;
 
   void _login(BuildContext context) async {
