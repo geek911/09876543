@@ -71,8 +71,10 @@ class _AddDonationPageState extends State<AddDonationPage> {
         donation.title = _title.text;
         donation.description = _description.text;
         donation.quantity = _quantity.text;
-        donation.toDate = _dateTo.text;
-        donation.fromDate = _dateFrom.text;
+        donation.startTime = _startTime.format(context).toString();
+        donation.endTime = _endTime.format(context);
+        donation.createdOn =
+            "${_dateCreated.day}/${_dateCreated.month}/${_dateCreated.year}";
 
         await Database.addDonation(donation.toJson()).then((value) {
           Navigator.of(context).pop();

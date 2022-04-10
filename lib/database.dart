@@ -34,6 +34,15 @@ class Database {
     await reference.push().set(donation);
   }
 
+  static Future<void> changeStatus(Donation donation) async {
+    await _db
+        .ref(
+            '${_auth.currentUser?.uid as String}/donations/${donation.id}/available')
+        .set(!(donation.available ??= true));
+
+    // reference.snapshot.child(donationId).
+  }
+
   static Future<List<Donation>> getMyDonations() async {
     var donations = <Donation>[];
     var event =
@@ -41,13 +50,15 @@ class Database {
 
     for (var child in event.snapshot.children) {
       var donation = Donation()
+        ..id = child.key
         ..title = child.child('title').value as String?
         ..available = child.child('available').value as bool?
-        ..fromDate = child.child('from_date').value as String?
-        ..toDate = child.child('to_date').value as String?
+        ..startTime = child.child('start_time').value as String?
+        ..endTime = child.child('end_time').value as String?
         ..description = child.child('description').value as String?
         ..location = child.child('location').value as String?
-        ..quantity = child.child('quantity').value as String?;
+        ..quantity = child.child('quantity').value as String?
+        ..createdOn = child.child('created_on').value as String?;
 
       donations.add(donation);
     }
@@ -62,13 +73,15 @@ class Database {
     for (var child in snapshot.snapshot.children) {
       for (var c in child.child('donations').children) {
         var donation = Donation()
+          ..id = c.key
           ..title = c.child('title').value as String?
           ..available = c.child('available').value as bool?
-          ..fromDate = c.child('from_date').value as String?
-          ..toDate = c.child('to_date').value as String?
+          ..startTime = c.child('start_time').value as String?
+          ..endTime = c.child('end_time').value as String?
           ..description = c.child('description').value as String?
           ..location = c.child('location').value as String?
-          ..quantity = c.child('quantity').value as String?;
+          ..quantity = c.child('quantity').value as String?
+          ..createdOn = c.child('created_on').value as String?;
 
         donations.add(donation);
       }

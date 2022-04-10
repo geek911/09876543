@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
 
@@ -132,26 +133,72 @@ class ProfileWidget {
 }
 
 class ListViewFactory {
-  static Widget listingsListView(
-      BuildContext context, List<Donation> donations) {
+  static Future _showDialog(
+      BuildContext context, bool isOwner, Donation donation) {
+    if (isOwner) {
+      return showPlatformDialog(
+        context: context,
+        builder: (context) => BasicDialogAlert(
+          title: const Text("Choose Option"),
+          content: const SizedBox(child: Text('Choose the current status?')),
+          actions: <Widget>[
+            BasicDialogAction(
+              title: const Text("Toogle Availability"),
+              onPressed: () {
+                Database.changeStatus(donation);
+                Navigator.pop(context);
+              },
+            ),
+            BasicDialogAction(
+              title: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
+    } else {
+      return showPlatformDialog(
+        context: context,
+        builder: (context) => BasicDialogAlert(
+          title: Text("Select account"),
+          actions: <Widget>[
+            BasicDialogAction(
+              title: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  static Widget listingsListView(BuildContext context, List<Donation> donations,
+      [bool isOwner = true]) {
     return ListView.builder(
         itemCount: donations.length,
         itemBuilder: (context, index) {
           var donation = donations[index];
 
           var subtitle =
-              "${donation.description ?? 'N/A'}, ${donation.fromDate ?? 'N/A'} - ${donation.toDate ?? 'N/A'}";
+              "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
 
           return Card(
             child: ListTile(
               title: Text(donation.title ?? "Not Set"),
               subtitle: Text(subtitle),
               trailing: Text(
-                  donation.available ?? true ? "Available" : "Unavailable"),
+                  (donation.available ??= false) ? "Available" : "Unavailable"),
               leading: Text(
                 donation.quantity ?? 0.toString(),
                 style: const TextStyle(fontSize: 30),
               ),
+              onTap: () {
+                _showDialog(context, isOwner, donation);
+              },
             ),
           );
         });
