@@ -42,6 +42,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^19.4.55
   cloud_firestore: ^3.1.10
   firebase_database: ^9.0.8
+  time_range_picker: ^2.1.0
 
 dev_dependencies:
   flutter_test:

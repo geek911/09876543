@@ -1,11 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_donor/repositories/donations_repository.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:food_donor/commons/widgets.dart';
-
+import 'package:time_range_picker/time_range_picker.dart';
 import '../database.dart';
 
 class AddDonationPage extends StatefulWidget {
@@ -28,6 +27,10 @@ class _AddDonationPageState extends State<AddDonationPage> {
   final TextEditingController _quantity = TextEditingController();
   final TextEditingController _dateFrom = TextEditingController();
   final TextEditingController _dateTo = TextEditingController();
+  final _dateCreated = DateTime.now();
+  TimeOfDay _startTime = TimeOfDay.now();
+  TimeOfDay _endTime =
+      TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1)));
 
   @override
   void initState() {
@@ -121,13 +124,45 @@ class _AddDonationPageState extends State<AddDonationPage> {
                 const SizedBox(
                   height: 8,
                 ),
-                SfDateRangePicker(
-                  onSelectionChanged: _onSelectionChanged,
-                  selectionMode: DateRangePickerSelectionMode.range,
-                  initialSelectedRange: PickerDateRange(
-                      DateTime.now().subtract(const Duration(days: 4)),
-                      DateTime.now().add(const Duration(days: 3))),
+                Text("Created on : ${_dateCreated.toIso8601String()}"),
+                const SizedBox(
+                  height: 8,
                 ),
+                Text(
+                    "Time of availabitlity: ${this._startTime.format(context)} -  ${this._endTime.format(context)}"),
+
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    label: const Text(
+                      "Adjust Time",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    icon: const Icon(Icons.watch),
+                    onPressed: () async {
+                      TimeRange result = await showTimeRangePicker(
+                        context: context,
+                      );
+                      setState(() {
+                        _startTime = result.startTime;
+                        _endTime = result.endTime;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                // SfDateRangePicker(
+                //   onSelectionChanged: _onSelectionChanged,
+                //   selectionMode: DateRangePickerSelectionMode.range,
+                //   initialSelectedRange: PickerDateRange(
+                //       DateTime.now().subtract(const Duration(days: 4)),
+                //       DateTime.now().add(const Duration(days: 3))),
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
