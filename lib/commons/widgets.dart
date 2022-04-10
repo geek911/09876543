@@ -134,8 +134,10 @@ class ProfileWidget {
 
 class ListViewFactory {
   static Future _showDialog(
-      BuildContext context, bool isOwner, Donation donation) {
-    if (isOwner) {
+      BuildContext context, bool isOwner, Donation donation) async {
+    var profile = await Database.getProfile();
+    var isDonor = profile.donator ?? false;
+    if (isDonor) {
       return showPlatformDialog(
         context: context,
         builder: (context) => BasicDialogAlert(
@@ -162,8 +164,23 @@ class ListViewFactory {
       return showPlatformDialog(
         context: context,
         builder: (context) => BasicDialogAlert(
-          title: Text("Select account"),
+          title: Text("Choice"),
+          content: const Text('Intersted in this post?'),
           actions: <Widget>[
+            BasicDialogAction(
+              title: Text("Yes"),
+              onPressed: () {
+                Database.intersted(donation, true);
+                Navigator.pop(context);
+              },
+            ),
+            BasicDialogAction(
+              title: Text("No"),
+              onPressed: () {
+                Database.intersted(donation, false);
+                Navigator.pop(context);
+              },
+            ),
             BasicDialogAction(
               title: Text("Cancel"),
               onPressed: () {
@@ -196,25 +213,39 @@ class ListViewFactory {
                 donation.quantity ?? 0.toString(),
                 style: const TextStyle(fontSize: 30),
               ),
-              onTap: () {
-                _showDialog(context, isOwner, donation);
+              onTap: () async {
+                await _showDialog(context, isOwner, donation);
               },
             ),
           );
         });
+  }
 
-    // return ListView(
-    //   children: [
-    //     ListTile(
-    //       title: Text("Title"),
-    //       subtitle: Text('This is the description'),
-    //       trailing: Text("Available"),
-    //       leading: Text(
-    //         3.toString(),
-    //         style: TextStyle(fontSize: 30),
-    //       ),
-    //     ),
-    //   ],
-    // );
+  static Widget receiverlistingsListView(
+      BuildContext context, List<Donation> donations,
+      [bool isOwner = true]) {
+    return ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          var donation = donations[index];
+
+          var subtitle =
+              "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
+
+          return Card(
+            child: ListTile(
+              title: Text(donation.title ?? "Not Set"),
+              subtitle: Text(subtitle),
+              trailing: Text('Pending'),
+              leading: Text(
+                donation.quantity ?? 0.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+              onTap: () async {
+                await _showDialog(context, isOwner, donation);
+              },
+            ),
+          );
+        });
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:food_donor/models/intested.dart';
 import 'package:food_donor/repositories/donations_repository.dart';
 
 class Database {
@@ -88,5 +89,49 @@ class Database {
     }
 
     return donations;
+  }
+
+  static Future<void> intersted(Donation donation, bool interested) async {
+    var interest = Interested();
+    interest.donationId = donation.id;
+    interest.interested = interested;
+
+    if (interested) {
+      DatabaseReference reference = _db
+          .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}');
+      await reference.set(interest.toJson());
+    } else {
+      DatabaseReference reference = _db
+          .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}');
+      await reference.remove();
+    }
+  }
+
+  static Future<List<Donation>> interstedDonations() async {
+    var donations = <Donation>[];
+    var event =
+        await _db.ref('${_auth.currentUser?.uid as String}/interests').once();
+
+    var allDonations = await Database.getAllDonations();
+
+    for (var child in event.snapshot.children) {
+      for (var donation in allDonations) {
+        if (donation.id == child.key) {
+          donations.add(donation);
+        }
+      }
+    }
+
+    return donations;
+  }
+
+  static Future<String> getStatus(String donationId) async {
+    var event = await _db
+        .ref('${_auth.currentUser?.uid as String}/interests/${donationId}')
+        .once();
+
+    return event.snapshot.child('received').value == true
+        ? 'Approved'
+        : 'Pending';
   }
 }

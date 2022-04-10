@@ -121,7 +121,7 @@ class _AddDonationPageState extends State<AddDonationPage> {
                 ),
                 FormFields.textField("Quantity", _quantity,
                     validator: ValidationBuilder()
-                        .regExp(RegExp("[0-9]+"), "Cannot be text")
+                        .regExp(RegExp("^\\d+\$"), "Cannot be text")
                         .build()),
                 const SizedBox(
                   height: 8,

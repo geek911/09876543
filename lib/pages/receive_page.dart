@@ -23,6 +23,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
   var _title = ['All Donations', 'Received Donations', 'Profile'];
 
   List<Donation> _donations = [];
+  List<Donation> _interstedDonations = [];
 
   Future<CustomUser> _loadProfile() async {
     var user = await Database.getProfile();
@@ -57,15 +58,18 @@ class _ReceiverPageState extends State<ReceiverPage> {
 
         _donations = value;
       });
+    } else if (_index == 1) {
+      Database.interstedDonations().then((value) {
+        setState(() {});
+        _interstedDonations = value;
+      });
     }
   }
 
   Widget _dashboardWidgets(BuildContext context, int index) {
     var widgetList = [
       ListViewFactory.listingsListView(context, _donations),
-      const Center(
-        child: Text('Received'),
-      ),
+      ListViewFactory.receiverlistingsListView(context, _interstedDonations),
       ProfileWidget.profileBody(context, _user)
     ];
 
