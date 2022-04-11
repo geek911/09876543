@@ -54,6 +54,7 @@ class _DonorRegisterPageState extends State<DonorRegisterPage> {
         customUser.donator = true;
         customUser.description = descriptionController.text;
         customUser.phoneNumber = phoneNumberController.text;
+        customUser.email = emailController.text;
 
         await Database.addProfile(customUser.toProfileJson()).then((value) {
           Navigator.of(context).pop();

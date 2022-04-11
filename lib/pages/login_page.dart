@@ -94,6 +94,8 @@ class LoginPage extends StatelessWidget {
           message = 'No user found for that email.';
         } else if (e.code == 'wrong-password') {
           message = 'Wrong password provided for that user.';
+        } else {
+          message = e.message.toString();
         }
       } finally {
         if (message.isNotEmpty) {

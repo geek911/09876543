@@ -19,6 +19,7 @@ class CustomUser {
       "description": description ??= "na",
       "phone_number": phoneNumber ??= "na",
       "donator": donator ??= false,
+      "email": email ?? ""
     };
   }
 

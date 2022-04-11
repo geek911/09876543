@@ -44,6 +44,7 @@ dependencies:
   firebase_database: ^9.0.8
   time_range_picker: ^2.1.0
   flutter_dialogs: ^2.1.1
+  mailer: ^5.1.0
 
 dev_dependencies:
   flutter_test:

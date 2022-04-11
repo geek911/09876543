@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:food_donor/models/custom_user.dart';
 import 'package:food_donor/models/intested.dart';
 import 'package:food_donor/repositories/donations_repository.dart';
+import 'package:food_donor/service/email_sender.dart';
 
 class Database {
   static final FirebaseDatabase _db = FirebaseDatabase.instance;
@@ -25,7 +26,7 @@ class Database {
     return CustomUser().fromProfileJson({
       'description': description,
       'donator': donator,
-      'phone_number': phoneNumber
+      'phone_number': phoneNumber,
     });
   }
 
@@ -33,6 +34,7 @@ class Database {
     DatabaseReference reference =
         _db.ref('${_auth.currentUser?.uid as String}/donations');
     await reference.push().set(donation);
+    EmailSender.sendNotifications();
   }
 
   static Future<void> changeStatus(Donation donation) async {
@@ -133,5 +135,19 @@ class Database {
     return event.snapshot.child('received').value == true
         ? 'Approved'
         : 'Pending';
+  }
+
+  static getAllEmails() async {
+    List<String> emails = [];
+    var snapshot = await _db.ref('/').once();
+
+    var children = snapshot.snapshot.children;
+
+    for (var child in children) {
+      var email = child.child('email').value as String;
+      emails.add(email);
+    }
+
+    return emails;
   }
 }
