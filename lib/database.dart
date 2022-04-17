@@ -38,12 +38,18 @@ class Database {
   }
 
   static Future<void> changeStatus(Donation donation) async {
-    await _db
-        .ref(
-            '${_auth.currentUser?.uid as String}/donations/${donation.id}/available')
-        .set(!(donation.available ??= true));
+    // await _db
+    //     .ref(
+    //         '${_auth.currentUser?.uid as String}/donations/${donation.id}/available')
+    //     .update({'available': !(donation.available ??= true)});
 
     // reference.snapshot.child(donationId).
+  }
+
+  static Future<void> deleteDonation(Donation donation) async {
+    await _db
+        .ref('${_auth.currentUser?.uid as String}/donations/${donation.id}')
+        .remove();
   }
 
   static Future<List<Donation>> getMyDonations() async {

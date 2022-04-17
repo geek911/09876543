@@ -221,6 +221,40 @@ class ListViewFactory {
         });
   }
 
+  static Widget donorlistingsListView(
+      BuildContext context, List<Donation> donations,
+      [bool isOwner = true]) {
+    return ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          var donation = donations[index];
+
+          var subtitle =
+              "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
+
+          return Card(
+            child: ListTile(
+              title: Text(donation.title ?? "Not Set"),
+              subtitle: Text(subtitle),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () async {
+                  await Database.deleteDonation(donation);
+                },
+              ),
+              leading: Text(
+                donation.quantity ?? 0.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+              onTap: () {
+                // await _showDialog(context, isOwner, donation);
+                Navigator.of(context).pushNamed('/accept');
+              },
+            ),
+          );
+        });
+  }
+
   static Widget receiverlistingsListView(
       BuildContext context, List<Donation> donations,
       [bool isOwner = true]) {

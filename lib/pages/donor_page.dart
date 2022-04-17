@@ -66,7 +66,7 @@ class _DonorPageState extends State<DonorPage> {
   Widget _dashboardWidgets(BuildContext context, int index) {
     var widgetList = [
       ListViewFactory.listingsListView(context, _donations),
-      ListViewFactory.listingsListView(context, _donations),
+      ListViewFactory.donorlistingsListView(context, _donations),
       ProfileWidget.profileBody(context, _user)
     ];
 
