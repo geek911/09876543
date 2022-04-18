@@ -205,14 +205,21 @@ class ListViewFactory {
             child: ListTile(
               title: Text(donation.title ?? "Not Set"),
               subtitle: Text(subtitle),
-              trailing: Text(
-                  (donation.available ??= false) ? "Available" : "Unavailable"),
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: () async {
+                  Database.deleteDonation(donation);
+                },
+              ),
               leading: Text(
                 donation.quantity ?? 0.toString(),
                 style: const TextStyle(fontSize: 30),
               ),
               onTap: () async {
-                // await _showDialog(context, isOwner, donation);
+                Navigator.of(context).pushNamed('/accept');
               },
             ),
           );

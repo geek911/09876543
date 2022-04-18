@@ -40,13 +40,29 @@ class Database {
   static Future<void> interested(Donation donation) async {
     await _db
         .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}')
-        .set({'status': 'pending'});
+        .set({
+      'status': 'pending',
+      'by': _auth.currentUser?.displayName,
+      'by_id': _auth.currentUser?.uid as String
+    });
   }
 
   static Future<void> uninterested(Donation donation) async {
     await _db
         .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}')
         .remove();
+  }
+
+  static Future<void> approve(Donation donation) async {
+    await _db
+        .ref('${donation.by_id}/interests/${donation.id}')
+        .update({'status': 'approved'});
+  }
+
+  static Future<void> declined(Donation donation) async {
+    await _db
+        .ref('${donation.by_id}/interests/${donation.id}')
+        .update({'status': 'declined'});
   }
 
   static Future<void> deleteDonation(Donation donation) async {
@@ -76,6 +92,52 @@ class Database {
     }
 
     return donations;
+  }
+
+  static Future<List<Donation>> donationsToBeApproved() async {
+    var donations = <Donation>[];
+    var temp = <Donation>[];
+
+    var myDonations = await getMyDonations();
+    var snapshot = await _db.ref('/').once();
+
+    for (var child in snapshot.snapshot.children) {
+      for (var c in child.child('interests').children) {
+        var donation = Donation()
+          ..id = c.key
+          ..by = c.child('by').value as String?
+          ..status = c.child('status').value as String?
+          ..by_id = c.child('by_id').value as String?;
+
+        temp.add(donation);
+      }
+    }
+
+    for (var i = 0; i < myDonations.length; i++) {
+      for (var j = 0; j < temp.length; j++) {
+        if (myDonations[i].id == temp[j].id) {
+          var donation = await getDonation(temp[j].id ?? "");
+          donation.by = temp[j].by;
+          donation.status = temp[j].status;
+          donation.by_id = temp[j].by_id;
+          donations.add(donation);
+        }
+      }
+    }
+
+    return donations;
+  }
+
+  static Future<Donation> getDonation(String id) async {
+    var event = await _db
+        .ref('${_auth.currentUser?.uid as String}/donations/${id}')
+        .once();
+    var snapshot = event.snapshot;
+
+    return Donation()
+      ..id = snapshot.key
+      ..title = snapshot.child('title').value as String
+      ..description = snapshot.child('description').value as String;
   }
 
   static Future<List<Donation>> getAllDonations() async {

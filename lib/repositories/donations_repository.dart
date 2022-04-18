@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/src/material/time.dart';
 
 class Donation {
@@ -11,6 +12,9 @@ class Donation {
   String? startTime;
   String? status;
   String? endTime;
+  String? receiver;
+  String? by_id;
+  String? by = FirebaseAuth.instance.currentUser?.displayName;
 
   String? createdOn;
 
@@ -23,7 +27,8 @@ class Donation {
       'available': available,
       'start_time': startTime,
       'end_time': endTime,
-      'created_on': createdOn
+      'created_on': createdOn,
+      'by': by
     };
   }
 }
