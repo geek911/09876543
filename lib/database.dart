@@ -37,13 +37,16 @@ class Database {
     EmailSender.sendNotifications();
   }
 
-  static Future<void> changeStatus(Donation donation) async {
-    // await _db
-    //     .ref(
-    //         '${_auth.currentUser?.uid as String}/donations/${donation.id}/available')
-    //     .update({'available': !(donation.available ??= true)});
+  static Future<void> interested(Donation donation) async {
+    await _db
+        .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}')
+        .set({'status': 'pending'});
+  }
 
-    // reference.snapshot.child(donationId).
+  static Future<void> uninterested(Donation donation) async {
+    await _db
+        .ref('${_auth.currentUser?.uid as String}/interests/${donation.id}')
+        .remove();
   }
 
   static Future<void> deleteDonation(Donation donation) async {

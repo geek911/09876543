@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_donor/pages/accept_request.dart';
 import 'package:food_donor/pages/add_donation_page.dart';
+import 'package:food_donor/pages/booking_page.dart';
 import 'package:food_donor/pages/login_page.dart';
 import 'package:food_donor/pages/donor_register_page.dart';
 import 'package:food_donor/pages/profile_page.dart';
@@ -27,7 +28,8 @@ class App extends StatelessWidget {
         '/donor': (context) => DonorPage(),
         '/receiver_page': (context) => ReceiverPage(),
         '/donor_page': (context) => DonorPage(),
-        '/accept': (context) => AcceptRequest()
+        '/accept': (context) => AcceptRequest(),
+        '/book': (context) => BookPage()
       },
       initialRoute: '/default',
     );

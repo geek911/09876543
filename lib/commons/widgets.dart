@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
@@ -133,64 +134,32 @@ class ProfileWidget {
 }
 
 class ListViewFactory {
-  static Future _showDialog(
-      BuildContext context, bool isOwner, Donation donation) async {
-    var profile = await Database.getProfile();
-    var isDonor = profile.donator ?? false;
-    if (isDonor) {
-      return showPlatformDialog(
-        context: context,
-        builder: (context) => BasicDialogAlert(
-          title: const Text("Choose Option"),
-          content: const SizedBox(child: Text('Choose the current status?')),
-          actions: <Widget>[
-            BasicDialogAction(
-              title: const Text("Toogle Availability"),
-              onPressed: () {
-                Database.changeStatus(donation);
-                Navigator.pop(context);
-              },
-            ),
-            BasicDialogAction(
-              title: Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+  static Future _showDialog(BuildContext context, Donation donation) async {
+    return showPlatformDialog(
+      context: context,
+      builder: (context) => BasicDialogAlert(
+        title: const Text("Selected Donation"),
+        content: Container(
+          child: const Text('Are you interested in the selected donation?'),
         ),
-      );
-    } else {
-      return showPlatformDialog(
-        context: context,
-        builder: (context) => BasicDialogAlert(
-          title: Text("Choice"),
-          content: const Text('Intersted in this post?'),
-          actions: <Widget>[
-            BasicDialogAction(
-              title: Text("Yes"),
-              onPressed: () {
-                Database.intersted(donation, true);
-                Navigator.pop(context);
-              },
-            ),
-            BasicDialogAction(
-              title: Text("No"),
-              onPressed: () {
-                Database.intersted(donation, false);
-                Navigator.pop(context);
-              },
-            ),
-            BasicDialogAction(
-              title: Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      );
-    }
+        actions: <Widget>[
+          BasicDialogAction(
+            title: const Text("Interested"),
+            onPressed: () {
+              Database.interested(donation);
+              Navigator.pop(context);
+            },
+          ),
+          BasicDialogAction(
+            title: Text("Not Interested"),
+            onPressed: () {
+              Database.uninterested(donation);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   static Widget listingsListView(BuildContext context, List<Donation> donations,
@@ -214,7 +183,36 @@ class ListViewFactory {
                 style: const TextStyle(fontSize: 30),
               ),
               onTap: () async {
-                await _showDialog(context, isOwner, donation);
+                // await _showDialog(context, isOwner, donation);
+              },
+            ),
+          );
+        });
+  }
+
+  static Widget donorListingsListView(
+      BuildContext context, List<Donation> donations,
+      [bool isOwner = true]) {
+    return ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          var donation = donations[index];
+
+          var subtitle =
+              "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
+
+          return Card(
+            child: ListTile(
+              title: Text(donation.title ?? "Not Set"),
+              subtitle: Text(subtitle),
+              trailing: Text(
+                  (donation.available ??= false) ? "Available" : "Unavailable"),
+              leading: Text(
+                donation.quantity ?? 0.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+              onTap: () async {
+                // await _showDialog(context, isOwner, donation);
               },
             ),
           );
@@ -275,8 +273,9 @@ class ListViewFactory {
                 donation.quantity ?? 0.toString(),
                 style: const TextStyle(fontSize: 30),
               ),
-              onTap: () async {
-                await _showDialog(context, isOwner, donation);
+              onTap: () {
+                // Navigator.of(context).pushNamed('/book');
+                _showDialog(context, donation);
               },
             ),
           );
