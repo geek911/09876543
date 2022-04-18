@@ -128,6 +128,7 @@ class Database {
     for (var child in event.snapshot.children) {
       for (var donation in allDonations) {
         if (donation.id == child.key) {
+          donation.status = child.child('status').value as String?;
           donations.add(donation);
         }
       }

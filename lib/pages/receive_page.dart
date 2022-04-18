@@ -20,7 +20,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
   HomeFragmentType _fragmentType = HomeFragmentType.HOME;
   int _index = 0;
   CustomUser _user = CustomUser();
-  var _title = ['All Donations', 'Received Donations', 'Profile'];
+  var _title = ['All Donations', 'Interested', 'Profile'];
 
   List<Donation> _donations = [];
   List<Donation> _interstedDonations = [];
@@ -69,7 +69,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
   Widget _dashboardWidgets(BuildContext context, int index) {
     var widgetList = [
       ListViewFactory.receiverlistingsListView(context, _donations),
-      ListViewFactory.receiverlistingsListView(context, _interstedDonations),
+      ListViewFactory.interestedlistingsListView(context, _interstedDonations),
       ProfileWidget.profileBody(context, _user)
     ];
 
@@ -104,7 +104,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
             label: 'Listings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.download),
+            icon: Icon(Icons.star),
             label: 'Received',
           ),
           BottomNavigationBarItem(

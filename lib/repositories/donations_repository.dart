@@ -9,7 +9,7 @@ class Donation {
   String? quantity;
   bool? available = true;
   String? startTime;
-
+  String? status;
   String? endTime;
 
   String? createdOn;

@@ -281,4 +281,33 @@ class ListViewFactory {
           );
         });
   }
+
+  static Widget interestedlistingsListView(
+      BuildContext context, List<Donation> donations,
+      [bool isOwner = true]) {
+    return ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          var donation = donations[index];
+
+          var subtitle =
+              "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
+
+          return Card(
+            child: ListTile(
+              title: Text(donation.title ?? "Not Set"),
+              subtitle: Text(subtitle),
+              trailing: Text(donation.status ?? 'n/a'),
+              leading: Text(
+                donation.quantity ?? 0.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+              onTap: () {
+                // Navigator.of(context).pushNamed('/book');
+                _showDialog(context, donation);
+              },
+            ),
+          );
+        });
+  }
 }
