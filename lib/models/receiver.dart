@@ -16,6 +16,7 @@ class Receiver {
       "description": description ??= "na",
       "phone_number": phoneNumber ??= "na",
       "donator": donator,
+      "email": email ??='na'
     };
   }
 

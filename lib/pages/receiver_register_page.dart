@@ -50,6 +50,7 @@ class _ReceiverRegisterPageState extends State<ReceiverRegisterPage> {
         receiver.donator = isDonator;
         receiver.description = descriptionController.text;
         receiver.phoneNumber = phoneNumberController.text;
+        receiver.email = emailController.text.trim();
 
         await Database.addProfile(receiver.toProfileJson()).then((value) {
           Navigator.of(context).pop();

@@ -34,7 +34,7 @@ class Database {
     DatabaseReference reference =
         _db.ref('${_auth.currentUser?.uid as String}/donations');
     await reference.push().set(donation);
-    EmailSender.sendNotifications();
+    await EmailSender.sendNotifications();
   }
 
   static Future<void> interested(Donation donation) async {
