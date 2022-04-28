@@ -15,6 +15,8 @@ class Donation {
   String? receiver;
   String? by_id;
   String? by = FirebaseAuth.instance.currentUser?.displayName;
+  double? latitude;
+  double? longtude;
 
   String? createdOn;
 
@@ -28,7 +30,9 @@ class Donation {
       'start_time': startTime,
       'end_time': endTime,
       'created_on': createdOn,
-      'by': by
+      'by': by,
+      'latitude': latitude ?? 0,
+      'longtude': longtude ?? 0
     };
   }
 }
