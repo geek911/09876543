@@ -155,7 +155,9 @@ class Database {
           ..description = c.child('description').value as String?
           ..location = c.child('location').value as String?
           ..quantity = c.child('quantity').value as String?
-          ..createdOn = c.child('created_on').value as String?;
+          ..createdOn = c.child('created_on').value as String?
+          ..email = c.child('email').value as String?
+          ..phoneNumber = c.child('phoneNumber').value as String?;
 
         donations.add(donation);
       }
@@ -211,14 +213,14 @@ class Database {
 
   static getAllEmails() async {
     List<String> emails = [];
-    var snapshot = await _db.ref('/').once();
+    // var snapshot = await _db.ref('/').once();
 
-    var children = snapshot.snapshot.children;
+    // var children = snapshot.snapshot.children;
 
-    for (var child in children) {
-      var email = child.child('email').value as String;
-      emails.add(email);
-    }
+    // for (var child in children) {
+    //   var email = child.child('email').value as String;
+    //   emails.add(email);
+    // }
 
     return emails;
   }

@@ -104,7 +104,7 @@ class _AddDonationPageState extends State<AddDonationPage> {
 
       try {
         var donation = Donation();
-
+        var profile = await Database.getProfile();
         donation.title = _title.text;
         donation.description = _description.text;
         donation.quantity = _quantity.text;
@@ -112,6 +112,8 @@ class _AddDonationPageState extends State<AddDonationPage> {
         donation.endTime = _endTime.format(context);
         donation.createdOn =
             "${_dateCreated.day}/${_dateCreated.month}/${_dateCreated.year}";
+        donation.email = profile.email;
+        donation.phoneNumber = profile.phoneNumber;
 
         setState(() {
           _loading = true;

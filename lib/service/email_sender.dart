@@ -56,20 +56,22 @@ class EmailSender {
       ..subject = 'New Donation Listing :: 😀 :: ${DateTime.now()}'
       ..text = 'A new donation was posted please login to checkout';
 
-    final sendReport2 = await send(equivalentMessage, smtpServer);
+    try {
+      final sendReport2 = await send(equivalentMessage, smtpServer);
 
-    // Sending multiple messages with the same connection
-    //
-    // Create a smtp client that will persist the connection
-    var connection = PersistentConnection(smtpServer);
+      // Sending multiple messages with the same connection
+      //
+      // Create a smtp client that will persist the connection
+      var connection = PersistentConnection(smtpServer);
 
-    // Send the first message
-    await connection.send(equivalentMessage);
+      // Send the first message
+      await connection.send(equivalentMessage);
 
-    // send the equivalent message
-    await connection.send(equivalentMessage);
+      // send the equivalent message
+      await connection.send(equivalentMessage);
 
-    // close the connection
-    await connection.close();
+      // close the connection
+      await connection.close();
+    } catch (e) {}
   }
 }

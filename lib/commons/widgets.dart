@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:food_donor/database.dart';
 import 'package:food_donor/models/custom_user.dart';
+import 'package:map_launcher/map_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../repositories/donations_repository.dart';
 
@@ -162,6 +164,51 @@ class ListViewFactory {
     );
   }
 
+  static Future _interestedShowDialog(
+      BuildContext context, Donation donation) async {
+    return showPlatformDialog(
+      context: context,
+      builder: (context) => BasicDialogAlert(
+        title: const Text("Get in touch"),
+        content: Container(
+          child: Text(
+              'Call the donor on ${donation.phoneNumber ?? ""} or email the donor at ${donation.email}'),
+        ),
+        actions: <Widget>[
+          BasicDialogAction(
+            title: const Text("Uninterested"),
+            onPressed: () {
+              Database.uninterested(donation);
+              Navigator.pop(context);
+            },
+          ),
+          BasicDialogAction(
+            title: Text("Get direction"),
+            onPressed: () async {
+              final availableMaps = await MapLauncher.installedMaps;
+              print(
+                  availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+
+              await availableMaps.first.showMarker(
+                coords: Coords(donation.latitude ?? 0, donation.longtude ?? 0),
+                title: "Donor Location",
+              );
+
+              Navigator.pop(context);
+            },
+          ),
+          BasicDialogAction(
+            title: Text("Cancel"),
+            onPressed: () {
+              // Database.interested(donation);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   static Widget listingsListView(BuildContext context, List<Donation> donations,
       [bool isOwner = true]) {
     return ListView.builder(
@@ -311,7 +358,7 @@ class ListViewFactory {
               ),
               onTap: () {
                 // Navigator.of(context).pushNamed('/book');
-                _showDialog(context, donation);
+                _interestedShowDialog(context, donation);
               },
             ),
           );
