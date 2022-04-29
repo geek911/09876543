@@ -212,15 +212,18 @@ class Database {
   }
 
   static getAllEmails() async {
-    List<String> emails = [];
-    // var snapshot = await _db.ref('/').once();
+    List<String?> emails = [];
+    var snapshot = await _db.ref('/').once();
 
-    // var children = snapshot.snapshot.children;
+    var children = snapshot.snapshot.children;
 
-    // for (var child in children) {
-    //   var email = child.child('email').value as String;
-    //   emails.add(email);
-    // }
+    for (var child in children) {
+      var email = child.child('email').value as String?;
+
+      if (email != null) {
+        emails.add(email);
+      }
+    }
 
     return emails;
   }
