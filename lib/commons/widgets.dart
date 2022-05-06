@@ -7,7 +7,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../repositories/donations_repository.dart';
-import 'package:geocoder/geocoder.dart';
+// import 'package:geocoder/geocoder.dart';
 
 class FormFields {
   static Widget textField(String title, TextEditingController controller,
