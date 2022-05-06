@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
@@ -7,6 +9,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../repositories/donations_repository.dart';
+import 'package:geocoder/geocoder.dart';
 
 class FormFields {
   static Widget textField(String title, TextEditingController controller,
@@ -318,11 +321,21 @@ class ListViewFactory {
           var subtitle =
               "${donation.description ?? 'N/A'}, DATE: ${donation.createdOn} ${donation.startTime ?? 'N/A'} - ${donation.endTime ?? 'N/A'}";
 
+          // var coordinates = Coordinates(donation.latitude ?? '0', donation.longtude);
+
+          String city = 'Gaborone';
+
+          // Geocoder.local
+          //     .findAddressesFromCoordinates(coordinates)
+          //     .then((value) {
+          //   city = value.first.locality;
+          // });
+
           return Card(
             child: ListTile(
               title: Text(donation.title ?? "Not Set"),
               subtitle: Text(subtitle),
-              trailing: Text('Pending'),
+              trailing: Text(city),
               leading: Text(
                 donation.quantity ?? 0.toString(),
                 style: const TextStyle(fontSize: 30),
