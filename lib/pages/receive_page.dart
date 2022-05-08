@@ -105,7 +105,7 @@ class _ReceiverPageState extends State<ReceiverPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: 'Received',
+            label: 'Favorates',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
