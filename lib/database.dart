@@ -157,6 +157,8 @@ class Database {
           ..quantity = c.child('quantity').value as String?
           ..createdOn = c.child('created_on').value as String?
           ..email = c.child('email').value as String?
+          ..latitude = c.child('latitude').value as double?
+          ..longtude = c.child('longtude').value as double?
           ..phoneNumber = c.child('phoneNumber').value as String?;
 
         donations.add(donation);

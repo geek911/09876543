@@ -40,7 +40,7 @@ class _AddDonationPageState extends State<AddDonationPage> {
   late PermissionStatus _permissionGranted;
   LocationData? _userLocation;
 
-  Future<void> _getUserLocation(Donation donation) async {
+  Future<LocationData?> _getUserLocation(Donation donation) async {
     Location location = Location();
 
     // Check if location service is enable
@@ -48,7 +48,7 @@ class _AddDonationPageState extends State<AddDonationPage> {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
-        return;
+        return null;
       }
     }
 
@@ -57,16 +57,17 @@ class _AddDonationPageState extends State<AddDonationPage> {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        return;
+        return null;
       }
     }
 
     final _locationData = await location.getLocation();
-    setState(() {
-      _userLocation = _locationData;
-      donation.latitude = _locationData.latitude;
-      donation.longtude = _locationData.longitude;
-    });
+    // setState(() {
+    //   _userLocation = _locationData;
+    //   donation.latitude = _locationData.latitude;
+    //   donation.longtude = _locationData.longitude;
+    // });
+    return _locationData;
   }
 
   @override
@@ -118,10 +119,10 @@ class _AddDonationPageState extends State<AddDonationPage> {
         setState(() {
           _loading = true;
         });
-        await _getUserLocation(donation);
+        var locationData = await _getUserLocation(donation);
 
-        // donation.latitude = _userLocation?.latitude ?? 0;
-        // donation.longtude = _userLocation?.longitude ?? 0;
+        donation.latitude = locationData?.latitude ?? 0;
+        donation.longtude = locationData?.longitude ?? 0;
         await Database.addDonation(donation.toJson()).then((value) {
           Navigator.of(context).pop();
         });
